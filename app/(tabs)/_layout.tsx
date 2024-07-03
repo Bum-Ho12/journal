@@ -1,44 +1,42 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Pressable, View, Text, StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: React.ComponentProps<typeof Feather>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <Feather size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerStatusBarHeight: 40,
+          title:'',
+          tabBarShowLabel:false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerLeft:()=>(
+            <View style={styles.headerLeftStyle}>
+              <Text style={styles.titleStyle}>Username</Text>
+              <Text style={styles.subTitleStyle}>username@gmail.com</Text>
+            </View>
+          ),
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/settings" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
+                  <MaterialIcons
+                    name="arrow-forward-ios"
+                    size={25} color={Colors.light.tint}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -48,12 +46,42 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="new"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'New Journal',
+          tabBarShowLabel:false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="summary"
+        options={{
+          title: 'Summary',
+          tabBarShowLabel:false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />
     </Tabs>
   );
 }
+
+
+const styles = StyleSheet.create({
+  headerLeftStyle:{
+    flexDirection:'column',
+    alignItems:'center',
+    marginLeft:10,
+    gap: 4, width: '100%',
+    marginBottom: 20,
+  },
+  titleStyle:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    width:'100%'
+  },
+  subTitleStyle:{
+    fontSize: 18,
+    color: Colors.light.tint,
+    width:'100%'
+  }
+})
