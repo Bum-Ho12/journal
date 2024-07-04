@@ -17,20 +17,20 @@ const SignUpPage=()=>{
                     <Text style={styles.subtitleStyle}>Username</Text>
                     <TextInput
                     style={styles.inputStyle}
-                    placeholder="username..." value={username}
+                    placeholder="John Doe" value={username}
                     onChangeText={(e)=>setUsername(e)}
                     />
                     <Text style={styles.subtitleStyle}>Email Address</Text>
                     <TextInput
                     style={styles.inputStyle}
-                    placeholder="email..." value={email}
+                    placeholder="johndoe@gmail.com" value={email}
                     onChangeText={(e)=>setEmail(e)}
                     inputMode="email" keyboardType="email-address"
                     />
                     <Text style={styles.subtitleStyle}>Password</Text>
                     <TextInput
                     style={styles.inputStyle}
-                    placeholder="password..." value={password}
+                    placeholder="password" value={password}
                     onChangeText={(e)=>setPassword(e)} secureTextEntry={visible}
                     />
                     <Pressable style={styles.visibilityStyle}
@@ -91,7 +91,8 @@ const styles = StyleSheet.create({
     },
     textTitle:{
         fontSize: 36,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color:Colors.light.tint
     },
     subtitleStyle:{
         fontSize: 20,
@@ -103,11 +104,12 @@ const styles = StyleSheet.create({
         color:'white'
     },
     normalText:{
-        fontSize: 16,
+        fontSize: 18,
     },
     highlightText:{
-        fontSize:16,
+        fontSize:18,
         color:Colors.light.tint,
+        fontWeight:'700'
     }
 })
 

@@ -14,11 +14,11 @@ const SignInPage=()=>{
             <View style={styles.container}>
                 <Text style={styles.textTitle}>Sign In</Text>
                 <View style={{width: '100%', gap: 20}}>
-                    <Text style={styles.subtitleStyle}>Username</Text>
+                    <Text style={styles.subtitleStyle}>Email</Text>
                     <TextInput
                     style={styles.inputStyle}
-                    placeholder="username..." value={username}
-                    onChangeText={(e)=>setUsername(e)}
+                    placeholder="johndoe@gmail.com" value={email}
+                    onChangeText={(e)=>setEmail(e)}
                     />
                     <Text style={styles.subtitleStyle}>Password</Text>
                     <TextInput
@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
     },
     textTitle:{
         fontSize: 36,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color:Colors.light.tint
     },
     subtitleStyle:{
         fontSize: 20,
@@ -96,11 +97,12 @@ const styles = StyleSheet.create({
         color:'white'
     },
     normalText:{
-        fontSize: 16,
+        fontSize: 18,
     },
     highlightText:{
-        fontSize:16,
+        fontSize:18,
         color:Colors.light.tint,
+        fontWeight:'700'
     }
 })
 
