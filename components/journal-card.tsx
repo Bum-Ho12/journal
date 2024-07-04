@@ -1,9 +1,11 @@
 import Colors from "@/constants/Colors";
+import { getFirstParagraph } from "@/utils/handlers";
 import { Journal } from "@/utils/types";
 import { Link } from "expo-router";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
 const JournalCard = ({ journal }:{journal:Journal}) => {
+    const content = getFirstParagraph(journal.content)
     return(
         <Link href={{
             pathname: '/update',
@@ -11,7 +13,7 @@ const JournalCard = ({ journal }:{journal:Journal}) => {
         }} asChild>
             <Pressable style={styles.container}>
                 <Text  style={styles.titleStyle}>{journal.title}</Text>
-                <Text style={styles.contentTextStyle}>{journal.content}</Text>
+                <Text style={styles.contentTextStyle}>{content}</Text>
                 <View style={styles.secondaryContainer}>
                     <Text style={styles.secondaryTextStyle}>{journal.category}</Text>
                     <Text style={styles.secondaryTextStyle}>{journal.date}</Text>
@@ -31,7 +33,8 @@ const styles = StyleSheet.create({
         borderColor: Colors.light.text,
         padding: 10,
         gap: 8,width:160,
-        marginLeft: 10, justifyContent:'space-between'
+        marginLeft: 10,
+        justifyContent:'space-between'
     },
     secondaryContainer:{
         flexDirection: 'row',

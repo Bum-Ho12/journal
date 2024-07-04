@@ -47,7 +47,8 @@ export const journals:Journal[] = [
     {
         'id': '1',
         "title": "First Day of Summer",
-        "content": "Today was the first day of summer. The weather was warm and sunny, perfect for a picnic.",
+        "content": "Today was the first day of summer. The weather was warm and sunny, perfect for a picnic.\n" +
+        "Today was the first day of summer. The weather was warm and sunny, perfect for a picnic.",
         "category": "Personal",
         "date": "2024-06-21"
     },
