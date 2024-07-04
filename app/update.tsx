@@ -2,6 +2,7 @@ import CategoryList from '@/components/category-list';
 import Colors from '@/constants/Colors';
 import { categories, journals } from '@/data/test-data';
 import { Journal } from '@/utils/types';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View, ScrollView, TextInput, Pressable,Text } from 'react-native';
@@ -20,20 +21,27 @@ export default function Update() {
     },[])
     return (
         <View style={styles.container}>
-            <TextInput placeholder='Title' multiline
-                value={title} onChangeText={(e)=>setTitle(e)}
-                style={{...styles.inputStyle, fontSize: 24}}
-            />
-            <CategoryList categories={categories}/>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
+                <TextInput placeholder='Title' multiline
+                    value={title} onChangeText={(e)=>setTitle(e)}
+                    style={{...styles.inputStyle, fontSize: 24}}
+                />
+                <CategoryList categories={categories}/>
                 <TextInput placeholder='content...' multiline
                     value={content} onChangeText={(e)=>setContent(e)}
                 style={styles.inputStyle}
-            />
+                />
             </ScrollView>
             <View style={styles.buttonSectionStyle}>
-                <Pressable style={styles.buttonStyle}><Text style={styles.buttonTextStyle}>Save</Text></Pressable>
-                <Pressable style={styles.buttonStyle}><Text style={styles.buttonTextStyle}>Cancel</Text></Pressable>
+                <Pressable style={styles.buttonStyle}>
+                    <Text style={styles.buttonTextStyle}>Save</Text>
+                </Pressable>
+                <Pressable style={styles.buttonStyle}>
+                    <Ionicons name='archive-outline' size={32} color={Colors.light.tint}/>
+                </Pressable>
+                <Pressable style={styles.buttonStyle}>
+                    <MaterialCommunityIcons name='trash-can-outline' size={36} color={Colors.light.tint}/>
+                </Pressable>
             </View>
         </View>
     );
@@ -44,9 +52,10 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width:'100%',
+        width:'90%',
         backgroundColor:'white',
-        paddingHorizontal:10
+        paddingHorizontal:10,
+        margin: 20, borderRadius: 10
     },
     scrollViewStyle:{
         width:'100%',
@@ -65,7 +74,9 @@ const styles = StyleSheet.create({
         width:'100%',
         alignItems:'center',
         padding: 10,
-        backgroundColor:Colors.light.background
+        backgroundColor:Colors.light.background,
+        borderTopWidth:1.5,
+        borderColor:Colors.light.tint
     },
     buttonStyle:{
         borderRadius:15,

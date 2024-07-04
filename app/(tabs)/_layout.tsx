@@ -48,7 +48,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="new"
         options={{
-          title: 'New Journal',
+          title: 'New Journal Note',
           headerTitleStyle:styles.titleStyle,
           tabBarShowLabel:false,
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
@@ -60,6 +60,7 @@ export default function TabLayout() {
         options={{
           title: 'Summary',
           tabBarShowLabel:false,
+          headerTitleStyle:styles.titleStyle,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />

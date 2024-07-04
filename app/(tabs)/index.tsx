@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   scrollViewStyle:{
     width:'100%',
-    paddingVertical:20,
+    paddingTop:5,
     paddingBottom: 10, alignItems:'center'
   },
   listStyle:{

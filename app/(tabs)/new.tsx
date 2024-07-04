@@ -7,14 +7,14 @@ import { StyleSheet, View, ScrollView, TextInput, Pressable,Text } from 'react-n
 export default function New() {
     return (
         <View style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
             <TextInput placeholder='Title' multiline
                 style={{...styles.inputStyle, fontSize: 24}}
             />
             <CategoryList categories={categories}/>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
                 <TextInput placeholder='content...' multiline
                 style={styles.inputStyle}
-            />
+                />
             </ScrollView>
             <View style={styles.buttonSectionStyle}>
                 <Pressable style={styles.buttonStyle}><Text style={styles.buttonTextStyle}>Save</Text></Pressable>
@@ -29,9 +29,10 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width:'100%',
+        width:'90%',
         backgroundColor:'white',
-        paddingHorizontal:10
+        paddingHorizontal:10,
+        margin: 20, borderRadius: 10
     },
     scrollViewStyle:{
         width:'100%',

@@ -1,12 +1,19 @@
 import JournalCard from '@/components/journal-card';
+import Colors from '@/constants/Colors';
 import { journals } from '@/data/test-data';
 import React from 'react';
-import { StyleSheet, View , FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View , FlatList, ScrollView, Text } from 'react-native';
 
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
+      <View style={styles.tabContainer}>
+        <Text style={styles.tabTextStyle}>Monthly</Text>
+        <Text style={styles.tabTextStyle}>Weekly</Text>
+        <Text style={styles.tabTextStyle}>Daily</Text>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.scrollViewStyle}>
         <FlatList scrollEnabled={false} data={journals}
         renderItem={({item})=><JournalCard journal={item}/>}
         contentContainerStyle={styles.listStyle} numColumns={2}
@@ -21,11 +28,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width:'100%'
+    width:'100%', paddingTop: 10
   },
+  tabContainer:{
+    flexDirection:'row',
+    justifyContent:'space-evenly',
+    width:'95%',paddingVertical:10,
+    alignItems:'center',
+    backgroundColor:Colors.light.background,
+    borderRadius: 7
+  },
+
   scrollViewStyle:{
-    width:'100%',paddingBottom: 20,
-    paddingVertical:10
+    width:'100%',
+    paddingVertical:10,
+    alignItems:'center'
   },
   listStyle:{
     gap:10,
@@ -35,6 +52,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  tabTextStyle:{
+    fontSize: 18,
+    fontWeight:'700',
+    color:Colors.light.tabIconSelected
   },
   separator: {
     marginVertical: 30,
