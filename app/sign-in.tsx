@@ -17,7 +17,7 @@ const SignInPage=()=>{
                     <Text style={styles.subtitleStyle}>Username</Text>
                     <TextInput
                     style={styles.inputStyle}
-                    placeholder="username" value={username}
+                    placeholder="username..." value={username}
                     onChangeText={(e)=>setUsername(e)}
                     />
                     <Text style={styles.subtitleStyle}>Password</Text>
@@ -32,14 +32,14 @@ const SignInPage=()=>{
                     </Pressable>
                 </View>
                 <Pressable style={styles.buttonStyle}>
-                    <Text style={styles.buttonTextStyle}>Sign Up</Text>
+                    <Text style={styles.buttonTextStyle}>Sign In</Text>
                 </Pressable>
-                <Link href={'/sign-up'}>
-                    <View style={styles.bottomStyle}>
-                        <Text style={styles.normalText}>Don't have an account, </Text>
-                        <Text style={styles.highlightText}>Sign In</Text>
-                    </View>
-                </Link>
+                <View  style={styles.bottomStyle}>
+                    <Text style={styles.normalText}>Don't have an account,</Text>
+                    <Link href={'/sign-up'} asChild>
+                        <Text style={styles.highlightText}>Sign Up</Text>
+                    </Link>
+                </View>
             </View>
         </SafeAreaView>
     )
