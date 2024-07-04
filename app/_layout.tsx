@@ -56,6 +56,7 @@ function RootLayoutNav() {
         <Stack.Screen name='sign-up'options={{ headerShown: false }}/>
         <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
         <Stack.Screen name='profile'/>
+        <Stack.Screen name='update'/>
       </Stack>
     </ThemeProvider>
   );

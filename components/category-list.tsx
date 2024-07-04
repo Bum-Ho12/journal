@@ -1,10 +1,12 @@
 import Colors from "@/constants/Colors";
+import { Category } from "@/utils/types";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
-import { View, Text, Pressable, StyleSheet, Animated } from "react-native";
+import { View, Text, Pressable, StyleSheet, Animated, TextInput } from "react-native";
 
-const CategoryList = ({ categories }:{categories:string[]}) => {
+const CategoryList = ({ categories }:{categories:Category[]}) => {
     const [expanded,setExpanded] = useState<boolean>(false)
+    const [selectedCategory,setSelectedCategory] = useState<string>()
     const animation = useRef(new Animated.Value(0)).current
 
     const toggleExpanded =()=>{
@@ -28,14 +30,20 @@ const CategoryList = ({ categories }:{categories:string[]}) => {
         <Pressable style={styles.categoryPressStyle}
         onPress={toggleExpanded}
         >
-            <Text style={styles.titleStyle}>categories</Text>
+            <TextInput placeholder="category"  style={{...styles.inputStyle,color:Colors.light.text}}
+            value={selectedCategory} editable={false}
+            />
             <MaterialIcons name={expanded?"keyboard-arrow-up":"keyboard-arrow-down"} size={30}/>
         </Pressable>
         <Animated.View style={[styles.subContainer,heightStyle]}>
             <View style={styles.categoryContentStyle}>
-                {categories.map((item:string,index:number)=>
-                <Pressable style={styles.categoryButtonStyle} key={index}>
-                    <Text style={styles.contentTextStyle}>{item}</Text>
+                {categories.map((item:Category,index:number)=>
+                <Pressable style={styles.categoryButtonStyle} key={index}
+                onPress={()=> {
+                    setSelectedCategory(item.name)
+                    toggleExpanded()
+                }}>
+                    <Text style={styles.contentTextStyle}>{item.name}</Text>
                 </Pressable>)}
             </View>
         </Animated.View>
@@ -73,7 +81,7 @@ const styles = StyleSheet.create({
         borderWidth: .5,
         borderColor: Colors.light.text,
     },
-    titleStyle:{
+    inputStyle:{
         fontSize: 16,
         fontWeight:'600'
     },

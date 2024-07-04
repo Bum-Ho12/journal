@@ -1,6 +1,7 @@
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native"
 import * as React from 'react'
 import { Link } from "expo-router"
+import Colors from "@/constants/Colors"
 
 const ProfileScreen=()=>{
     const [username,setUsername] = React.useState<string>()
@@ -11,11 +12,16 @@ const ProfileScreen=()=>{
     return(
         <SafeAreaView>
             <View style={styles.container}>
+                <View>
+                    <Text style={styles.textTitle}>Change profile</Text>
+                </View>
+                <Text style={styles.normalText}>Username</Text>
                 <TextInput
                 style={styles.inputStyle}
                 placeholder="username" value={username}
                 onChangeText={(e)=>setUsername(e)}
                 />
+                <Text style={styles.normalText}>Email address</Text>
                 <TextInput
                 style={styles.inputStyle}
                 placeholder="email" value={email}
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
         alignItems:'flex-end',
     },
     buttonStyle:{
-        backgroundColor:'blue',
+        backgroundColor:Colors.light.tint,
         width:'100%',
         paddingVertical:10,
         borderRadius: 30, alignItems:'center'
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
         color:'white'
     },
     normalText:{
-        fontSize: 16,
+        fontSize: 18,
     },
     highlightText:{
         fontSize:16,

@@ -1,9 +1,10 @@
 import Colors from "@/constants/Colors";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Category } from "@/utils/types";
+import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
 import { View, Text, Pressable, StyleSheet, Animated, TextInput } from "react-native";
 
-const FilterCategory = ({ categories }:{categories:string[]}) => {
+const FilterCategory = ({ categories }:{categories:Category[]}) => {
     const [expanded,setExpanded] = useState<boolean>(false)
     const animation = useRef(new Animated.Value(0)).current
 
@@ -40,9 +41,9 @@ const FilterCategory = ({ categories }:{categories:string[]}) => {
         <Animated.View style={[styles.subContainer,heightStyle]}>
             <Text style={styles.titleStyle}>categories</Text>
             <View style={styles.categoryContentStyle}>
-                {categories.map((item:string,index:number)=>
+                {categories.map((item:Category,index:number)=>
                 <Pressable style={styles.categoryButtonStyle} key={index}>
-                    <Text style={styles.contentTextStyle}>{item}</Text>
+                    <Text style={styles.contentTextStyle}>{item.name}</Text>
                 </Pressable>)}
             </View>
         </Animated.View>

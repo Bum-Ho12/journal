@@ -1,17 +1,23 @@
 import Colors from "@/constants/Colors";
 import { Journal } from "@/utils/types";
-import { View, Text, StyleSheet } from "react-native";
+import { Link } from "expo-router";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 const JournalCard = ({ journal }:{journal:Journal}) => {
     return(
-        <View style={styles.container}>
-            <Text  style={styles.titleStyle}>{journal.title}</Text>
-            <Text style={styles.contentTextStyle}>{journal.content}</Text>
-            <View style={styles.secondaryContainer}>
-                <Text style={styles.secondaryTextStyle}>{journal.category}</Text>
-                <Text style={styles.secondaryTextStyle}>{journal.date}</Text>
-            </View>
-        </View>
+        <Link href={{
+            pathname: '/update',
+            params: {id: journal.id}
+        }} asChild>
+            <Pressable style={styles.container}>
+                <Text  style={styles.titleStyle}>{journal.title}</Text>
+                <Text style={styles.contentTextStyle}>{journal.content}</Text>
+                <View style={styles.secondaryContainer}>
+                    <Text style={styles.secondaryTextStyle}>{journal.category}</Text>
+                    <Text style={styles.secondaryTextStyle}>{journal.date}</Text>
+                </View>
+            </Pressable>
+        </Link>
     )
 }
 

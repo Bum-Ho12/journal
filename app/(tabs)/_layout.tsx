@@ -31,7 +31,7 @@ export default function TabLayout() {
             </View>
           ),
           headerRight: () => (
-            <Link href="/settings" asChild>
+            <Link href="/profile" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <MaterialIcons
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   titleStyle:{
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     width:'100%'
   },
