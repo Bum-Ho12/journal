@@ -49,8 +49,10 @@ export default function TabLayout() {
         name="new"
         options={{
           title: 'New Journal',
+          headerTitleStyle:styles.titleStyle,
           tabBarShowLabel:false,
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
+          headerStyle:styles.headerStyle,
         }}
       />
       <Tabs.Screen
@@ -83,5 +85,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.light.tint,
     width:'100%'
+  },
+  headerStyle:{
+    // Android shadow elevation
+    elevation: 3,
+    // iOS shadow color
+    shadowColor: '#000',
+    // iOS shadow offset
+    shadowOffset: { width: 0, height: 2 },
+    // iOS shadow opacity
+    shadowOpacity: 0.25,
+    // iOS shadow radius
+    shadowRadius: 3,
   }
 })

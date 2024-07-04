@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
 export {
@@ -54,10 +55,24 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name='sign-in'options={{ headerShown: false }}/>
         <Stack.Screen name='sign-up'options={{ headerShown: false }}/>
-        <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
-        <Stack.Screen name='profile'/>
-        <Stack.Screen name='update'/>
+        <Stack.Screen name='profile' options={{
+          title:'Profile',
+          headerTitleStyle:styles.titleStyle
+        }}/>
+        <Stack.Screen name='update' options={{
+          title:'Update Journal',
+          headerTitleStyle:styles.titleStyle
+        }}/>
       </Stack>
     </ThemeProvider>
   );
 }
+
+
+const styles = StyleSheet.create({
+  titleStyle:{
+    fontSize: 22,
+    fontWeight: 'bold',
+    width:'100%'
+  },
+})
