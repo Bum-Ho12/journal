@@ -4,13 +4,14 @@ import JournalCard from '@/components/journal-card';
 import Colors from '@/constants/Colors';
 import { useGetDailyJournalsQuery, useGetWeeklyJournalsQuery, useGetMonthlyJournalsQuery } from '@/store/api';
 import { Journal } from '@/utils/types';
+import { getErrorMessage } from '@/utils/handlers';
 
 export default function TabTwoScreen() {
   const [selectedTab, setSelectedTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
 
-  const { data: dailyJournals, isLoading: isLoadingDaily } = useGetDailyJournalsQuery({});
-  const { data: weeklyJournals, isLoading: isLoadingWeekly } = useGetWeeklyJournalsQuery({});
-  const { data: monthlyJournals, isLoading: isLoadingMonthly } = useGetMonthlyJournalsQuery({});
+  const { data: dailyJournals, isLoading: isLoadingDaily,error:dailyError } = useGetDailyJournalsQuery({});
+  const { data: weeklyJournals, isLoading: isLoadingWeekly,error:weeklyError } = useGetWeeklyJournalsQuery({});
+  const { data: monthlyJournals, isLoading: isLoadingMonthly,error:monthlyError } = useGetMonthlyJournalsQuery({});
 
   const getJournals = () => {
     switch (selectedTab) {
@@ -26,6 +27,14 @@ export default function TabTwoScreen() {
   };
 
   const renderItem = ({ item }:{item:Journal}) => <JournalCard journal={item} />;
+
+  if (dailyError || weeklyError || monthlyError) {
+    return (
+      <View style={styles.container}>
+        <Text>Error: {getErrorMessage(dailyError||monthlyError||weeklyError)}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -45,7 +54,7 @@ export default function TabTwoScreen() {
         contentContainerStyle={styles.scrollViewStyle}
       >
         {isLoadingDaily || isLoadingWeekly || isLoadingMonthly ? (
-          <Text>Loading...</Text>
+          <Text style={styles.loadingText}>Loading...</Text>
         ) : (
           <FlatList
             scrollEnabled={false}
@@ -96,6 +105,12 @@ const styles = StyleSheet.create({
   },
   selectedTabTextStyle: {
     color: Colors.light.tabIconSelected,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.light.tint,
+    marginTop: 10,
   },
 });
 

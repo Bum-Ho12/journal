@@ -5,6 +5,8 @@ import JournalCard from '@/components/journal-card';
 import { categories } from '@/data/test-data';
 import { ApiError, Journal } from '@/utils/types';
 import { useGetJournalsQuery } from '@/store/api';
+import { getErrorMessage } from '@/utils/handlers';
+import Colors from '@/constants/Colors';
 
 export default function TabOneScreen() {
   const windowWidth = useWindowDimensions().width;
@@ -16,14 +18,6 @@ export default function TabOneScreen() {
   // State to manage data and refreshing
   const [data, setData] = useState<Journal[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  const getErrorMessage = (error: unknown): string => {
-    if (error && typeof error === 'object' && 'data' in error) {
-      const apiError = error as ApiError;
-      return apiError.data?.detail || 'An unexpected error occurred.';
-    }
-    return 'An unexpected error occurred.';
-  };
 
   // Update state when journals data changes
   React.useEffect(() => {
@@ -45,7 +39,7 @@ export default function TabOneScreen() {
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
@@ -97,5 +91,11 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingBottom: 10
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.light.tint,
+    marginTop: 10,
   },
 });

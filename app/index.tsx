@@ -8,28 +8,8 @@ import Colors from "@/constants/Colors";
 import { useLoginUserMutation } from '@/store/api';
 import { loadCredentials, setCredentials } from '@/store/auth-slice';
 import { store } from "@/store";
-
-// Define the response type for the sign-in
-type SignInResponse = {
-    user: {
-        email: string;
-        username: string;
-    };
-    token: {
-        access_token: string;
-        token_type: string;
-    };
-};
-
-// Define a type for possible API errors
-type ApiError = {
-    data?: {
-        detail?: string | { loc: string[]; msg: string; type: string; }[];
-    };
-    error?: {
-        message?: string;
-    };
-};
+import { getErrorMessage } from '@/utils/handlers';
+import { AuthResponse } from '@/utils/types';
 
 const SignInPage = () => {
     const router = useRouter();
@@ -61,23 +41,12 @@ const SignInPage = () => {
     const handleSignIn = async () => {
         try {
             const user = { email, password };
-            const response = await signInUser(user).unwrap() as SignInResponse;
+            const response = await signInUser(user).unwrap() as AuthResponse;
             await store.dispatch(setCredentials(response));
             router.replace('/(tabs)');
         } catch (err) {
             console.error('Failed to sign in: ', err);
         }
-    };
-
-    const getErrorMessage = (error: unknown): string => {
-        if (error && typeof error === 'object' && 'data' in error) {
-            const apiError = error as ApiError;
-            if (Array.isArray(apiError.data?.detail)) {
-                return apiError.data.detail.map((err: any) => `${err.loc.join(' -> ')}: ${err.msg}`).join(', ');
-            }
-            return apiError.data?.detail || 'An unexpected error occurred.';
-        }
-        return 'An unexpected error occurred.';
     };
 
     if (isLoadingAccount) {

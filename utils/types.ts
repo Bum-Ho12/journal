@@ -22,8 +22,19 @@ export interface Token{
     token_type: string,
 }
 
+// Response type for the user authentication
+export type AuthResponse = {
+    user: {
+        email: string;
+        username: string;
+    };
+    token: {
+        access_token: string;
+        token_type: string;
+    };
+};
 
-// Define a type for possible API errors
+//Type for possible API errors
 export type ApiError = {
     data?: {
         detail?: string;

@@ -6,29 +6,9 @@ import { useRegisterUserMutation } from '@/store/api';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '@/store/auth-slice';
 import { store } from "@/store";
+import { getErrorMessage } from "@/utils/handlers";
+import { AuthResponse } from "@/utils/types";
 
-
-// Response type for the user registration
-type RegisterResponse = {
-    user: {
-        email: string;
-        username: string;
-    };
-    token: {
-        access_token: string;
-        token_type: string;
-    };
-};
-
-// Define a type for possible API errors
-type ApiError = {
-    data?: {
-        detail?: string;
-    };
-    error?: {
-        message?: string;
-    };
-};
 
 const SignUpPage = () => {
     const router = useRouter();
@@ -41,21 +21,13 @@ const SignUpPage = () => {
     const handleSignUp = async () => {
         try {
             const user = { username, email, password };
-            const response = await registerUser(user).unwrap() as RegisterResponse;
+            const response = await registerUser(user).unwrap() as AuthResponse;
             await store.dispatch(setCredentials(response));
             // Navigate to Home screen
             router.replace('/(tabs)');
         } catch (err) {
             console.error('Failed to register user: ', err);
         }
-    };
-
-    const getErrorMessage = (error: unknown): string => {
-        if (error && typeof error === 'object' && 'data' in error) {
-            const apiError = error as ApiError;
-            return apiError.data?.detail || 'An unexpected error occurred.';
-        }
-        return 'An unexpected error occurred.';
     };
 
     return (
