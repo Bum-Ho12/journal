@@ -1,18 +1,23 @@
 import Colors from "@/constants/Colors";
 import { Category } from "@/utils/types";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { View, Text, Pressable, StyleSheet, Animated, TextInput } from "react-native";
 
 interface CategoryListProps {
     categories: Category[];
     onSelectCategory: (selectedCategory: string) => void;
+    selectedCategory?: string;
 }
 
-const CategoryList = ({ categories, onSelectCategory }: CategoryListProps) => {
+const CategoryList = ({ categories, onSelectCategory, selectedCategory }: CategoryListProps) => {
     const [expanded, setExpanded] = useState<boolean>(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>();
+    const [currentCategory, setCurrentCategory] = useState<string | undefined>(selectedCategory);
     const animation = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        setCurrentCategory(selectedCategory);
+    }, [selectedCategory]);
 
     const toggleExpanded = () => {
         if (categories.length > 0) {
@@ -35,9 +40,9 @@ const CategoryList = ({ categories, onSelectCategory }: CategoryListProps) => {
         <View style={styles.container}>
             <Pressable style={styles.categoryPressStyle} onPress={toggleExpanded}>
                 <TextInput
-                    placeholder="category"
+                    placeholder="Category"
                     style={{ ...styles.inputStyle, color: Colors.light.text }}
-                    value={selectedCategory}
+                    value={currentCategory}
                     editable={false}
                 />
                 <MaterialIcons name={expanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} size={30} />
@@ -49,8 +54,8 @@ const CategoryList = ({ categories, onSelectCategory }: CategoryListProps) => {
                             style={styles.categoryButtonStyle}
                             key={index}
                             onPress={() => {
-                                setSelectedCategory(item.name);
-                                onSelectCategory(item.name); // Pass selected category back to parent
+                                setCurrentCategory(item.name);
+                                onSelectCategory(item.name);
                                 toggleExpanded();
                             }}
                         >
@@ -99,7 +104,7 @@ const styles = StyleSheet.create({
     inputStyle: {
         fontSize: 16,
         fontWeight: "600",
-        width: '80%'
+        width: '80%',
     },
     contentTextStyle: {
         fontSize: 16,

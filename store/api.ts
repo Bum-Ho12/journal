@@ -79,6 +79,13 @@ const api = createApi({
             body: credentials,
             }),
         }),
+        updateUser: builder.mutation({
+            query: ({ userId:email, ...updates }) => ({
+                url: `/users/${email}`,
+                method: 'PUT',
+                body: updates,
+            }),
+        }),
     }),
 });
 
@@ -91,6 +98,7 @@ export const {
     useUpdateJournalMutation,
     useDeleteJournalMutation,
     useRegisterUserMutation,
+    useUpdateUserMutation,
     useLoginUserMutation,
 } = api;
 
