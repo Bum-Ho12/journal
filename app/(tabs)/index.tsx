@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView,Text, FlatList, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, FlatList, useWindowDimensions, RefreshControl } from 'react-native';
 import FilterCategory from '@/components/filter';
 import JournalCard from '@/components/journal-card';
 import { categories } from '@/data/test-data';
 import { ApiError, Journal } from '@/utils/types';
 import { useGetJournalsQuery } from '@/store/api';
 
-
 export default function TabOneScreen() {
   const windowWidth = useWindowDimensions().width;
-  const { data: journals, error, isLoading } = useGetJournalsQuery({});
+  const { data: journals, error, isLoading, refetch } = useGetJournalsQuery({});
 
   // Calculate number of columns based on screen width
   const numColumns = Math.floor(windowWidth / 160);
 
-  // State to manage data
+  // State to manage data and refreshing
   const [data, setData] = useState<Journal[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const getErrorMessage = (error: unknown): string => {
     if (error && typeof error === 'object' && 'data' in error) {
-        const apiError = error as ApiError;
-        return apiError.data?.detail || 'An unexpected error occurred.';
+      const apiError = error as ApiError;
+      return apiError.data?.detail || 'An unexpected error occurred.';
     }
     return 'An unexpected error occurred.';
   };
@@ -36,18 +36,36 @@ export default function TabOneScreen() {
     <JournalCard journal={item} key={index} />
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   if (isLoading) {
-    return <View style={styles.container}><Text>Loading...</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   if (error) {
-    return <View style={styles.container}><Text>Error: {getErrorMessage(error)}</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>Error: {getErrorMessage(error)}</Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewStyle}>
-        <FilterCategory categories={categories}/>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewStyle}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <FilterCategory categories={categories} />
         <FlatList
           data={data}
           scrollEnabled={false}
@@ -77,7 +95,6 @@ const styles = StyleSheet.create({
   listStyle: {
     gap: 10,
     width: '100%',
-    // alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 10
   },

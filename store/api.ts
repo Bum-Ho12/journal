@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { setCredentials, logOut } from './auth-slice';
+import { logOut } from './auth-slice';
 import {RootState} from './index'
 
 const baseUrl = 'https://journal-1ixk.onrender.com';
@@ -9,7 +9,7 @@ const baseQuery = fetchBaseQuery({
     prepareHeaders: (headers, { getState }) => {
         const state = getState() as RootState;
         const token = state.auth.token;
-        console.log(token)
+        // console.log(token)
         if (token) {
             headers.set('Authorization', `Bearer ${token.access_token}`);
         }
@@ -67,7 +67,7 @@ const api = createApi({
         }),
         registerUser: builder.mutation({
             query: (user) => ({
-            url: '/users',
+            url: '/users/',
             method: 'POST',
             body: user,
             }),

@@ -4,18 +4,17 @@ import { Stack } from 'expo-router';
 import { useSelector } from 'react-redux';
 import { selectIsUserSignedIn } from '@/store/auth-slice';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import { store } from '@/store';
 
 export default function RootLayoutNav() {
-    const [initialRoute, setInitialRoute] = useState<"index" | "(tabs)" | null>(null);
+    const isUserSignedIn = useSelector(selectIsUserSignedIn);
+    const [initialRoute, setInitialRoute] = useState<"sign-in" | "(tabs)" | null>(null);
 
     useEffect(() => {
-        const isLoggedIn = store.getState().auth.isSignedIn
         // Wait for the auth state to load before determining the initial route
-        if (isLoggedIn !== null) {
-        setInitialRoute(isLoggedIn ? '(tabs)' : 'index');
+        if (isUserSignedIn !== null) {
+        setInitialRoute(isUserSignedIn ? '(tabs)' : 'sign-in');
         }
-    }, []);
+    }, [isUserSignedIn]);
 
     if (initialRoute === null) {
         // Show a loading indicator while determining the initial route

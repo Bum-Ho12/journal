@@ -1,9 +1,12 @@
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+    Pressable, SafeAreaView, StyleSheet, Text,
+    TextInput, View, ActivityIndicator
+} from 'react-native';
 import { Link, useRouter } from "expo-router";
 import Colors from "@/constants/Colors";
 import { useLoginUserMutation } from '@/store/api';
-import { setCredentials } from '@/store/auth-slice';
+import { loadCredentials, setCredentials } from '@/store/auth-slice';
 import { store } from "@/store";
 
 // Define the response type for the sign-in
@@ -30,10 +33,30 @@ type ApiError = {
 
 const SignInPage = () => {
     const router = useRouter();
-    const [email, setEmail] = React.useState<string>('');
-    const [password, setPassword] = React.useState<string>('');
-    const [visible, setVisibility] = React.useState<boolean>(true);
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [visible, setVisibility] = useState<boolean>(true);
+    const [isLoadingAccount, setLoadingAccount] = useState<boolean>(true);
     const [signInUser, { isLoading, error }] = useLoginUserMutation();
+
+    useEffect(() => {
+        const loadAccount = async () => {
+            try {
+                await store.dispatch(loadCredentials()).then((res) => {
+                    const user = store.getState().auth.user;
+                    if (user) {
+                        router.replace('/(tabs)');
+                    } else {
+                        setLoadingAccount(false);
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading account:', error);
+                setLoadingAccount(false);
+            }
+        };
+        loadAccount();
+    }, []);
 
     const handleSignIn = async () => {
         try {
@@ -57,50 +80,59 @@ const SignInPage = () => {
         return 'An unexpected error occurred.';
     };
 
+    if (isLoadingAccount) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={Colors.light.tint} />
+                <Text style={styles.loadingText}>Loading...</Text>
+            </View>
+        );
+    }
+
     return (
         <SafeAreaView>
-        <View style={styles.container}>
-            <Text style={styles.textTitle}>Sign In</Text>
-            <View style={{ width: '100%', gap: 20 }}>
-            <Text style={styles.subtitleStyle}>Email</Text>
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="johndoe@gmail.com"
-                value={email}
-                onChangeText={(e) => setEmail(e)}
-                inputMode="email"
-                keyboardType="email-address"
-            />
-            <Text style={styles.subtitleStyle}>Password</Text>
-            <TextInput
-                style={styles.inputStyle}
-                placeholder="password"
-                value={password}
-                onChangeText={(e) => setPassword(e)}
-                secureTextEntry={visible}
-            />
-            <Pressable
-                style={styles.visibilityStyle}
-                onPress={() => setVisibility((val) => !val)}
-            >
-                <Text style={styles.highlightText}>
-                {visible ? 'view' : 'hide'} password
-                </Text>
-            </Pressable>
+            <View style={styles.container}>
+                <Text style={styles.textTitle}>Sign In</Text>
+                <View style={{ width: '100%', gap: 20 }}>
+                    <Text style={styles.subtitleStyle}>Email</Text>
+                    <TextInput
+                        style={styles.inputStyle}
+                        placeholder="johndoe@gmail.com"
+                        value={email}
+                        onChangeText={(e) => setEmail(e)}
+                        inputMode="email"
+                        keyboardType="email-address"
+                    />
+                    <Text style={styles.subtitleStyle}>Password</Text>
+                    <TextInput
+                        style={styles.inputStyle}
+                        placeholder="password"
+                        value={password}
+                        onChangeText={(e) => setPassword(e)}
+                        secureTextEntry={visible}
+                    />
+                    <Pressable
+                        style={styles.visibilityStyle}
+                        onPress={() => setVisibility((val) => !val)}
+                    >
+                        <Text style={styles.highlightText}>
+                            {visible ? 'view' : 'hide'} password
+                        </Text>
+                    </Pressable>
+                </View>
+                <Pressable style={styles.buttonStyle} onPress={handleSignIn}>
+                    <Text style={styles.buttonTextStyle}>
+                        {isLoading ? 'Signing In...' : 'Sign In'}
+                    </Text>
+                </Pressable>
+                {error && <Text style={styles.errorTextStyle}>Error: {getErrorMessage(error)}</Text>}
+                <View style={styles.bottomStyle}>
+                    <Text style={styles.normalText}>Don't have an account, </Text>
+                    <Link href={'/sign-up'} asChild>
+                        <Text style={styles.highlightText}>Sign Up</Text>
+                    </Link>
+                </View>
             </View>
-            <Pressable style={styles.buttonStyle} onPress={handleSignIn}>
-            <Text style={styles.buttonTextStyle}>
-                {isLoading ? 'Signing In...' : 'Sign In'}
-            </Text>
-            </Pressable>
-            {error && <Text style={styles.errorTextStyle}>Error: {getErrorMessage(error)}</Text>}
-            <View style={styles.bottomStyle}>
-            <Text style={styles.normalText}>Don't have an account, </Text>
-            <Link href={'/sign-up'} asChild>
-                <Text style={styles.highlightText}>Sign Up</Text>
-            </Link>
-            </View>
-        </View>
         </SafeAreaView>
     );
 };
@@ -164,6 +196,23 @@ const styles = StyleSheet.create({
     },
     errorTextStyle: {
         color: 'red',
+        marginTop: 10,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.light.background,
+    },
+    loadingImage: {
+        width: 100,
+        height: 100,
+        marginBottom: 20,
+    },
+    loadingText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: Colors.light.tint,
         marginTop: 10,
     },
 });

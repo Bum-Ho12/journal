@@ -31,8 +31,6 @@ export default function RootLayout() {
       if (loaded) {
         await store.dispatch(loadCredentials()).then((res) => {
           SplashScreen.hideAsync();
-          const user = store.getState().auth.user;
-          console.log('Credentials loaded', res, user);
         });
       }
     }
