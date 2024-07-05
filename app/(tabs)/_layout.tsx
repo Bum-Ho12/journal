@@ -1,10 +1,12 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import * as React from 'react';
 import { Link, Tabs } from 'expo-router';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-
 import Colors from '@/constants/Colors';
-import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { loadCredentials } from '@/store/auth-slice';
+import { useDispatch } from 'react-redux';
+import { store } from '@/store';
+import { User } from '@/utils/types';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Feather>['name'];
@@ -14,6 +16,19 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+
+  const dispatch = useDispatch()
+
+  const [user,setUser] = React.useState<User|null>(null)
+
+  React.useEffect(()=>{
+    const loadUser = async()=>{
+      await store.dispatch(loadCredentials()).then(()=>{
+        setUser(store.getState().auth.user)
+      })
+    }
+    loadUser()
+  },[dispatch])
 
   return (
     <Tabs>
@@ -26,8 +41,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerLeft:()=>(
             <View style={styles.headerLeftStyle}>
-              <Text style={styles.titleStyle}>Username</Text>
-              <Text style={styles.subTitleStyle}>username@gmail.com</Text>
+              {user &&<Text style={styles.titleStyle}>{user?.username}</Text>}
+              {user && <Text style={styles.subTitleStyle}>{user?.email}</Text>}
             </View>
           ),
           headerRight: () => (
@@ -78,7 +93,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   titleStyle:{
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     width:'100%'
   },

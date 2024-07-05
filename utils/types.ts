@@ -10,3 +10,25 @@ export interface Category{
     name: string,
     id: string
 }
+
+export interface User{
+    username: string,
+    email: string,
+    password?: string
+}
+
+export interface Token{
+    access_token:string,
+    token_type: string,
+}
+
+
+// Define a type for possible API errors
+export type ApiError = {
+    data?: {
+        detail?: string;
+    };
+    error?: {
+        message?: string;
+    };
+};

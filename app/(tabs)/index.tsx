@@ -1,30 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, View, Text, ScrollView, FlatList, useWindowDimensions } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, ScrollView,Text, FlatList, useWindowDimensions } from 'react-native';
 import FilterCategory from '@/components/filter';
 import JournalCard from '@/components/journal-card';
-import { categories, journals } from '@/data/test-data';
-import { Journal } from '@/utils/types';
+import { categories } from '@/data/test-data';
+import { ApiError, Journal } from '@/utils/types';
+import { useGetJournalsQuery } from '@/store/api';
+
 
 export default function TabOneScreen() {
   const windowWidth = useWindowDimensions().width;
+  const { data: journals, error, isLoading } = useGetJournalsQuery({});
 
   // Calculate number of columns based on screen width
   const numColumns = Math.floor(windowWidth / 160);
 
-  const [data, setData] = useState(journals);
+  // State to manage data
+  const [data, setData] = useState<Journal[]>([]);
 
-  const renderItem = ({ item, index }:{item:Journal,index:number}) => (
-    <JournalCard
-      journal={item} key={index}
-    />
+  const getErrorMessage = (error: unknown): string => {
+    if (error && typeof error === 'object' && 'data' in error) {
+        const apiError = error as ApiError;
+        return apiError.data?.detail || 'An unexpected error occurred.';
+    }
+    return 'An unexpected error occurred.';
+  };
+
+  // Update state when journals data changes
+  React.useEffect(() => {
+    if (journals) {
+      setData(journals);
+    }
+  }, [journals]);
+
+  const renderItem = ({ item, index }: { item: Journal; index: number }) => (
+    <JournalCard journal={item} key={index} />
   );
+
+  if (isLoading) {
+    return <View style={styles.container}><Text>Loading...</Text></View>;
+  }
+
+  if (error) {
+    return <View style={styles.container}><Text>Error: {getErrorMessage(error)}</Text></View>;
+  }
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewStyle}>
         <FilterCategory categories={categories}/>
         <FlatList
-          data={data} scrollEnabled={false}
+          data={data}
+          scrollEnabled={false}
           contentContainerStyle={styles.listStyle}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()} // Assuming you have unique keys
@@ -40,22 +66,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width:'100%'
+    width: '100%'
   },
-  scrollViewStyle:{
-    width:'100%',
-    paddingTop:5,
-    paddingBottom: 10, alignItems:'center'
+  scrollViewStyle: {
+    width: '100%',
+    paddingTop: 5,
+    paddingBottom: 10,
+    alignItems: 'center'
   },
-  listStyle:{
-    gap:10,
-    width:'100%',
-    alignItems:'center',
-    justifyContent:'center',
+  listStyle: {
+    gap: 10,
+    width: '100%',
+    // alignItems: 'center',
+    justifyContent: 'center',
     paddingBottom: 10
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 });

@@ -1,21 +1,15 @@
+import { store } from '@/store';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { Provider } from 'react-redux';
+import RootLayoutNav from './rootLayoutNav';
+import { loadCredentials } from '@/store/auth-slice';
+import * as SecureStore from 'expo-secure-store';
 import 'react-native-reanimated';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'sign-in',
-};
+export { ErrorBoundary } from 'expo-router';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,53 +20,32 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    const loadAccount =async()=>{
+      const resp = await SecureStore.getItemAsync('user')
+      console.log('user',resp)
+      if (loaded) {
+        await store.dispatch(loadCredentials()).then((res) => {
+          SplashScreen.hideAsync();
+          const user = store.getState().auth.user;
+          console.log('Credentials loaded', res, user);
+        });
+      }
     }
+    loadAccount()
   }, [loaded]);
 
   if (!loaded) {
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-
   return (
-    <ThemeProvider
-    value={ DefaultTheme}
-    // value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-    >
-      <Stack>
-        <Stack.Screen name='sign-in'options={{ headerShown: false }}/>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name='sign-up'options={{ headerShown: false }}/>
-        <Stack.Screen name='profile' options={{
-          title:'Profile',
-          headerTitleStyle:styles.titleStyle
-        }}/>
-        <Stack.Screen name='update' options={{
-          title:'Update Journal',
-          headerTitleStyle:styles.titleStyle
-        }}/>
-      </Stack>
-    </ThemeProvider>
+    <Provider store={store}>
+      <RootLayoutNav />
+    </Provider>
   );
 }
-
-
-const styles = StyleSheet.create({
-  titleStyle:{
-    fontSize: 22,
-    fontWeight: 'bold',
-    width:'100%'
-  },
-})
