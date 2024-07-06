@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, FlatList, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, ScrollView, Text, TouchableOpacity, Pressable } from 'react-native';
 import JournalCard from '@/components/journal-card';
 import Colors from '@/constants/Colors';
 import { useGetDailyJournalsQuery, useGetWeeklyJournalsQuery, useGetMonthlyJournalsQuery } from '@/store/api';
@@ -9,9 +9,9 @@ import { getErrorMessage } from '@/utils/handlers';
 export default function TabTwoScreen() {
   const [selectedTab, setSelectedTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
 
-  const { data: dailyJournals, isLoading: isLoadingDaily,error:dailyError } = useGetDailyJournalsQuery({});
-  const { data: weeklyJournals, isLoading: isLoadingWeekly,error:weeklyError } = useGetWeeklyJournalsQuery({});
-  const { data: monthlyJournals, isLoading: isLoadingMonthly,error:monthlyError } = useGetMonthlyJournalsQuery({});
+  const { data: dailyJournals, isLoading: isLoadingDaily, error: dailyError, refetch: refetchDaily } = useGetDailyJournalsQuery({});
+  const { data: weeklyJournals, isLoading: isLoadingWeekly, error: weeklyError, refetch: refetchWeekly } = useGetWeeklyJournalsQuery({});
+  const { data: monthlyJournals, isLoading: isLoadingMonthly, error: monthlyError, refetch: refetchMonthly } = useGetMonthlyJournalsQuery({});
 
   const getJournals = () => {
     switch (selectedTab) {
@@ -26,12 +26,31 @@ export default function TabTwoScreen() {
     }
   };
 
-  const renderItem = ({ item }:{item:Journal}) => <JournalCard journal={item} />;
+  const renderItem = ({ item }: { item: Journal }) => <JournalCard journal={item} />;
+
+  const onRefresh = async () => {
+    switch (selectedTab) {
+      case 'daily':
+        await refetchDaily();
+        break;
+      case 'weekly':
+        await refetchWeekly();
+        break;
+      case 'monthly':
+        await refetchMonthly();
+        break;
+      default:
+        break;
+    }
+  };
 
   if (dailyError || weeklyError || monthlyError) {
     return (
       <View style={styles.container}>
-        <Text>Error: {getErrorMessage(dailyError||monthlyError||weeklyError)}</Text>
+        <Text>Error: {getErrorMessage(dailyError || weeklyError || monthlyError)}</Text>
+        <Pressable onPress={onRefresh} style={styles.reloadButton}>
+          <Text style={styles.reloadButtonText}>Reload</Text>
+        </Pressable>
       </View>
     );
   }
@@ -95,7 +114,6 @@ const styles = StyleSheet.create({
   listStyle: {
     gap: 10,
     width: '100%',
-    alignItems: 'center',
     paddingBottom: 10,
   },
   tabTextStyle: {
@@ -112,5 +130,15 @@ const styles = StyleSheet.create({
     color: Colors.light.tint,
     marginTop: 10,
   },
+  reloadButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: Colors.light.background,
+    borderRadius: 8,
+  },
+  reloadButtonText: {
+    fontSize: 16,
+    color: Colors.light.tint,
+    textAlign: 'center',
+  },
 });
-

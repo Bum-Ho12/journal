@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link, Tabs } from 'expo-router';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import Colors from '@/constants/Colors';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { loadCredentials } from '@/store/auth-slice';
 import { useDispatch } from 'react-redux';
 import { store } from '@/store';
@@ -12,7 +12,7 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof Feather>['name'];
   color: string;
 }) {
-  return <Feather size={30} style={{ marginBottom: -3 }} {...props} />;
+  return <Feather size={30} style={{ marginBottom: 3 }} {...props} />;
 }
 
 export default function TabLayout() {
@@ -31,13 +31,21 @@ export default function TabLayout() {
   },[dispatch])
 
   return (
-    <Tabs>
+    <Tabs screenOptions={{
+      headerStyle:{
+        height: 100,
+      },
+      tabBarStyle:{
+        padding:10, height: 80
+      }
+    }}>
       <Tabs.Screen
         name="index"
         options={{
           headerStatusBarHeight: 40,
           title:'',
-          tabBarShowLabel:false,
+          tabBarLabel:'Home',
+          tabBarLabelStyle:styles.tabBarLabelStyle,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerLeft:()=>(
             <View style={styles.headerLeftStyle}>
@@ -46,7 +54,7 @@ export default function TabLayout() {
             </View>
           ),
           headerRight: () => (
-            <Link href="/profile" asChild>
+            <Link href="/account" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <MaterialIcons
@@ -65,7 +73,8 @@ export default function TabLayout() {
         options={{
           title: 'New Journal Note',
           headerTitleStyle:styles.titleStyle,
-          tabBarShowLabel:false,
+          tabBarLabel:'New',
+          tabBarLabelStyle:styles.tabBarLabelStyle,
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
           headerStyle:styles.headerStyle,
         }}
@@ -74,9 +83,21 @@ export default function TabLayout() {
         name="summary"
         options={{
           title: 'Summary',
-          tabBarShowLabel:false,
+          tabBarLabel:'Summary',
+          tabBarLabelStyle:styles.tabBarLabelStyle,
           headerTitleStyle:styles.titleStyle,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="account"
+        options={{
+          title: 'Profile',
+          tabBarLabel:'Profile',
+          tabBarLabelStyle:styles.tabBarLabelStyle,
+          headerTitleStyle:styles.titleStyle,
+          tabBarIcon: ({ color }) => <Ionicons name='person-circle-outline'
+          size={30} style={{ marginBottom: -3 }} color={color} />,
         }}
       />
     </Tabs>
@@ -92,6 +113,11 @@ const styles = StyleSheet.create({
     gap: 4, width: '100%',
     marginBottom: 20,
   },
+  tabBarLabelStyle:{
+    fontSize: 18,
+    fontWeight:'500',
+    paddingBottom: 7,
+  },
   titleStyle:{
     fontSize: 22,
     fontWeight: 'bold',
@@ -103,6 +129,7 @@ const styles = StyleSheet.create({
     width:'100%'
   },
   headerStyle:{
+    height: 100,
     // Android shadow elevation
     elevation: 3,
     // iOS shadow color

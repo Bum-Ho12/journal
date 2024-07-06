@@ -64,6 +64,7 @@ const api = createApi({
             url: `/journals/${id}`,
             method: 'DELETE',
             }),
+            invalidatesTags: ['Journals'],
         }),
         registerUser: builder.mutation({
             query: (user) => ({
@@ -85,6 +86,7 @@ const api = createApi({
                 method: 'PUT',
                 body: updates,
             }),
+            invalidatesTags: ['Journals'],
         }),
     }),
 });

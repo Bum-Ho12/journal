@@ -8,6 +8,7 @@ import RootLayoutNav from './rootLayoutNav';
 import { loadCredentials } from '@/store/auth-slice';
 import * as SecureStore from 'expo-secure-store';
 import 'react-native-reanimated';
+import { StatusBar } from 'expo-status-bar';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -43,6 +44,7 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
+      <StatusBar style='dark'/>
       <RootLayoutNav />
     </Provider>
   );

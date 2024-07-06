@@ -29,9 +29,6 @@ const ProfileScreen = () => {
     };
 
     const handleAuthenticationError = () => {
-        // Example: Navigate back to initial route and logout the user
-        // Replace with actual navigation logic and logout action
-        // logOut(); // Dispatch your logout action
         Alert.alert('Session Expired', 'Please log in again.');
     };
 

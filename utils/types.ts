@@ -1,9 +1,10 @@
 export interface Journal{
-    id: string,
+    id: number,
     title: string,
     content: string,
     category: string,
-    date: string,
+    date_created: string,
+    due_date: string
 }
 
 export interface Category{

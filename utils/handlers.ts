@@ -24,3 +24,29 @@ export const getErrorMessage = (error: unknown): string => {
     }
     return 'An unexpected error occurred.';
 };
+
+export function formatDateTime(dateTimeString: string) {
+    const date = new Date(dateTimeString);
+
+    const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    };
+
+    const formattedTime = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+    });
+
+    const formattedDate = date.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
+
+    return {formattedTime,formattedDate};
+}
+

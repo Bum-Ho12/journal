@@ -4,99 +4,127 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
 import { View, Text, Pressable, StyleSheet, Animated, TextInput } from "react-native";
 
-const FilterCategory = ({ categories }:{categories:Category[]}) => {
-    const [expanded,setExpanded] = useState<boolean>(false)
-    const animation = useRef(new Animated.Value(0)).current
+const FilterCategory = ({ categories, onFilterChange }:{categories:Category[],
+    onFilterChange:(searchTerm: string, selectedCategory: React.SetStateAction<string>) => void}
+) => {
+    const [expanded, setExpanded] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
 
-    const toggleExpanded =()=>{
-        if(categories.length>0){
-            Animated.timing(animation,{
-                toValue:expanded?0:1,
-                duration:300,
-                useNativeDriver:false,
-            }).start(()=>setExpanded(!expanded))
+    const animation = useRef(new Animated.Value(0)).current;
+
+    const toggleExpanded = () => {
+        if (categories.length > 0) {
+            Animated.timing(animation, {
+                toValue: expanded ? 0 : 1,
+                duration: 300,
+                useNativeDriver: false,
+            }).start(() => setExpanded(!expanded));
         }
-    }
+    };
 
     const heightStyle = {
-        maxHeight:animation.interpolate({
-            inputRange:[0,1],
-            outputRange:[0,categories.length * 70]
+        maxHeight: animation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, categories.length * 70]
         })
-    }
+    };
 
-    return (<View style={styles.container}>
-        <View style={styles.categoryPressStyle}>
-            <Ionicons name="search" size={30}/>
-            <TextInput placeholder="search..."
-                style={styles.inputStyle}
-            />
-            <Pressable
-            onPress={toggleExpanded}
-            >
-                <Ionicons name={expanded?"close-circle-outline":"filter"} size={30}
-                color={Colors.light.tint}/>
-            </Pressable>
-        </View>
-        <Animated.View style={[styles.subContainer,heightStyle]}>
-            <Text style={styles.titleStyle}>categories</Text>
-            <View style={styles.categoryContentStyle}>
-                {categories.map((item:Category,index:number)=>
-                <Pressable style={styles.categoryButtonStyle} key={index}>
-                    <Text style={styles.contentTextStyle}>{item.name}</Text>
-                </Pressable>)}
+    const handleSearch = (text:string) => {
+        setSearchTerm(text);
+        onFilterChange(text, selectedCategory);
+    };
+
+    const handleCategorySelect = (category:string) => {
+        setSelectedCategory(category);
+        onFilterChange(searchTerm, category);
+        toggleExpanded();
+    };
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.categoryPressStyle}>
+                <Ionicons name="search" size={30} />
+                <TextInput
+                    placeholder="search..."
+                    style={styles.inputStyle}
+                    value={searchTerm}
+                    onChangeText={handleSearch}
+                />
+                <Pressable onPress={toggleExpanded}>
+                    <Ionicons name={expanded ? "close-circle-outline" : "filter"} size={30} color={Colors.light.tint} />
+                </Pressable>
             </View>
-        </Animated.View>
-    </View>)
-}
+            <Animated.View style={[styles.subContainer, heightStyle]}>
+                <Text style={styles.titleStyle}>categories</Text>
+                <View style={styles.categoryContentStyle}>
+                    <Pressable
+                        style={styles.categoryButtonStyle}
+                        onPress={() => handleCategorySelect('')}
+                    >
+                        <Text style={styles.contentTextStyle}>All</Text>
+                    </Pressable>
+                    {categories.map((item, index:number) => (
+                        <Pressable
+                            style={styles.categoryButtonStyle}
+                            key={index}
+                            onPress={() => handleCategorySelect(item.name)}
+                        >
+                            <Text style={styles.contentTextStyle}>{item.name}</Text>
+                        </Pressable>
+                    ))}
+                </View>
+            </Animated.View>
+        </View>
+    );
+};
 
 export default FilterCategory;
 
 const styles = StyleSheet.create({
-    container:{
-        width:'100%',
-        padding:10,
+    container: {
+        width: '100%',
+        paddingHorizontal: 10,paddingTop:10,
         gap: 10,
-        marginBottom: 10
     },
-    subContainer:{
-        overflow:'hidden', gap: 10
+    subContainer: {
+        overflow: 'hidden', gap: 10
     },
-    inputStyle:{
-        width:'80%',
+    inputStyle: {
+        width: '80%',
         paddingVertical: 10,
         borderRadius: 30,
-        alignItems:'flex-start',
+        alignItems: 'flex-start',
         paddingHorizontal: 20,
         fontSize: 18
     },
-    categoryPressStyle:{
-        flexDirection:'row',
-        width:'100%',
-        justifyContent:'space-between',
-        padding:10,
-        backgroundColor:Colors.light.background,
-        alignItems:'center',borderRadius: 10
+    categoryPressStyle: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        padding: 10,
+        backgroundColor: Colors.light.background,
+        alignItems: 'center', borderRadius: 10
     },
-    categoryContentStyle:{
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        width:'100%', flexWrap:'wrap', gap:5,
+    categoryContentStyle: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        width: '100%', flexWrap: 'wrap', gap: 5,
         backgroundColor: 'white',
-        padding: 20,borderRadius: 10
+        padding: 20, borderRadius: 10
     },
-    categoryButtonStyle:{
+    categoryButtonStyle: {
         padding: 10,
         borderRadius: 10,
         borderWidth: .5,
         borderColor: Colors.light.text,
     },
-    titleStyle:{
+    titleStyle: {
         fontSize: 16,
-        fontWeight:'600'
+        fontWeight: '600'
     },
-    contentTextStyle:{
-        fontSize:16,
-        fontWeight:'700'
+    contentTextStyle: {
+        fontSize: 16,
+        fontWeight: '700'
     }
-})
+});
