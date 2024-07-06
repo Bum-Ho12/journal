@@ -1,54 +1,55 @@
-import CategoryList from '@/components/category-list';
-import Colors from '@/constants/Colors';
-import { categories } from '@/data/test-data';
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, TextInput, Pressable, Text, Button } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { StyleSheet, View, ScrollView, TextInput, Pressable, Text } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker'; // Importing DateTimePicker component
 
-import { useCreateJournalMutation } from '@/store/api';
+import CategoryList from '@/components/category-list'; // Importing CategoryList component
+import Colors from '@/constants/Colors'; // Importing Colors from constants
+import { useCreateJournalMutation } from '@/store/api'; // Importing useCreateJournalMutation hook from store/api
 
 export default function New() {
-    const [title, setTitle] = useState('');
-    const [category, setCategory] = useState('');
-    const [content, setContent] = useState('');
-    const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [title, setTitle] = useState(''); // State for journal title
+    const [category, setCategory] = useState(''); // State for selected category
+    const [content, setContent] = useState(''); // State for journal content
+    const [dueDate, setDueDate] = useState<Date | undefined>(undefined); // State for due date
+    const [showDatePicker, setShowDatePicker] = useState(false); // State to show/hide date picker
 
-    const [createJournal, { isLoading, isError, isSuccess }] = useCreateJournalMutation();
+    const [createJournal, { isLoading, isError, isSuccess }] = useCreateJournalMutation(); // Mutation hook for creating journal entry
 
+    // Handler for date picker change
     const handleDateChange = (event: any, selectedDate?: Date) => {
         setShowDatePicker(false); // Hide date picker
         if (selectedDate) {
-            setDueDate(selectedDate);
+            setDueDate(selectedDate); // Set selected due date
         }
     };
 
+    // Handler for saving journal entry
     const handleSave = () => {
         if (!title.trim() || !category.trim() || !content.trim()) {
-            alert('Please fill out all fields.');
+            alert('Please fill out all fields.'); // Alert if any field is empty
             return;
         }
 
         const journalData: any = { title, category, content };
         if (dueDate) {
-            journalData.due_date = dueDate.toISOString(); // Convert to ISOString
+            journalData.due_date = dueDate.toISOString(); // Convert due date to ISOString if available
         }
 
-        createJournal(journalData)
-            .unwrap()
+        createJournal(journalData) // Call createJournal mutation
+            .unwrap() // Unwrap the promise
             .then(() => {
-                // Reset form
+                // Reset form after successful save
                 setTitle('');
                 setCategory('');
                 setContent('');
                 setDueDate(undefined);
             })
             .catch((error) => {
-                // Handle error
-                console.error('Failed to create journal entry:', error);
+                console.error('Failed to create journal entry:', error); // Handle error if creation fails
             });
     };
 
+    // Handler for canceling journal entry creation
     const handleCancel = () => {
         // Reset form
         setTitle('');
@@ -60,6 +61,7 @@ export default function New() {
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
+                {/* Input for journal title */}
                 <TextInput
                     placeholder='Title'
                     multiline
@@ -67,18 +69,21 @@ export default function New() {
                     value={title}
                     onChangeText={(text) => setTitle(text)}
                 />
+                {/* Component for selecting category */}
                 <CategoryList
-                    categories={categories}
                     onSelectCategory={(selectedCategory) => setCategory(selectedCategory)}
                 />
+                {/* Container for displaying selected due date or date picker */}
                 <View style={styles.dateContainer}>
                     <Text style={styles.dateText}>
                         {dueDate ? dueDate.toDateString() : 'Select due date'}
                     </Text>
+                    {/* Button to show date picker */}
                     <Pressable style={styles.datePickerButton} onPress={() => setShowDatePicker(true)}>
                         <Text style={styles.datePickerButtonText}>Select Date</Text>
                     </Pressable>
                 </View>
+                {/* Render date picker if showDatePicker is true */}
                 {showDatePicker && (
                     <DateTimePicker
                         style={{ width: '100%' }}
@@ -88,6 +93,7 @@ export default function New() {
                         onChange={handleDateChange}
                     />
                 )}
+                {/* Input for journal content */}
                 <TextInput
                     placeholder='Content...'
                     multiline
@@ -96,10 +102,13 @@ export default function New() {
                     onChangeText={(text) => setContent(text)}
                 />
             </ScrollView>
+            {/* Section for save and cancel buttons */}
             <View style={styles.buttonSectionStyle}>
+                {/* Save button */}
                 <Pressable style={styles.buttonStyle} onPress={handleSave}>
-                    <Text style={styles.buttonTextStyle}>{isLoading?"Saving...":"Save"}</Text>
+                    <Text style={styles.buttonTextStyle}>{isLoading ? "Saving..." : "Save"}</Text>
                 </Pressable>
+                {/* Cancel button */}
                 <Pressable style={styles.buttonStyle} onPress={handleCancel}>
                     <Text style={styles.buttonTextStyle}>Cancel</Text>
                 </Pressable>
@@ -108,6 +117,7 @@ export default function New() {
     );
 }
 
+// Styles for New component
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -167,6 +177,6 @@ const styles = StyleSheet.create({
     datePickerButtonText: {
         fontSize: 18,
         color: Colors.light.tint,
-        fontWeight:'700'
+        fontWeight: '700'
     },
 });

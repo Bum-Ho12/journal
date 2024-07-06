@@ -3,49 +3,49 @@ import {
     Pressable, SafeAreaView, StyleSheet, Text,
     TextInput, View, ActivityIndicator
 } from 'react-native';
-import { Link, useRouter } from "expo-router";
-import Colors from "@/constants/Colors";
-import { useLoginUserMutation } from '@/store/api';
-import { loadCredentials, setCredentials } from '@/store/auth-slice';
-import { store } from "@/store";
-import { getErrorMessage } from '@/utils/handlers';
-import { AuthResponse } from '@/utils/types';
+import { Link, useRouter } from "expo-router"; // Importing Link and useRouter from expo-router
+import Colors from "@/constants/Colors"; // Importing Colors from constants
+import { useLoginUserMutation } from '@/store/api'; // Importing useLoginUserMutation from api
+import { loadCredentials, setCredentials } from '@/store/auth-slice'; // Importing loadCredentials and setCredentials from auth-slice
+import { store } from "@/store"; // Importing store from store
+import { getErrorMessage } from '@/utils/handlers'; // Importing getErrorMessage from handlers
+import { AuthResponse } from '@/utils/types'; // Importing AuthResponse from types
 
 const SignInPage = () => {
-    const router = useRouter();
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [visible, setVisibility] = useState<boolean>(true);
-    const [isLoadingAccount, setLoadingAccount] = useState<boolean>(true);
-    const [signInUser, { isLoading, error }] = useLoginUserMutation();
+    const router = useRouter(); // useRouter hook for navigation
+    const [email, setEmail] = useState<string>(''); // State for email input
+    const [password, setPassword] = useState<string>(''); // State for password input
+    const [visible, setVisibility] = useState<boolean>(true); // State for password visibility toggle
+    const [isLoadingAccount, setLoadingAccount] = useState<boolean>(true); // State for loading account state
+    const [signInUser, { isLoading, error }] = useLoginUserMutation(); // useLoginUserMutation hook for signing in user
 
     useEffect(() => {
         const loadAccount = async () => {
             try {
                 await store.dispatch(loadCredentials()).then((res) => {
-                    const user = store.getState().auth.user;
+                    const user = store.getState().auth.user; // Getting user details from Redux store
                     if (user) {
-                        router.replace('/(tabs)');
+                        router.replace('/(tabs)'); // Redirect to home screen if user is authenticated
                     } else {
-                        setLoadingAccount(false);
+                        setLoadingAccount(false); // Set loading account state to false
                     }
                 });
             } catch (error) {
-                console.error('Error loading account:', error);
-                setLoadingAccount(false);
+                console.error('Error loading account:', error); // Log error if loading account fails
+                setLoadingAccount(false); // Set loading account state to false
             }
         };
-        loadAccount();
+        loadAccount(); // Call loadAccount function on component mount
     }, []);
 
     const handleSignIn = async () => {
         try {
-            const user = { email, password };
-            const response = await signInUser(user).unwrap() as AuthResponse;
-            await store.dispatch(setCredentials(response));
-            router.replace('/(tabs)');
+            const user = { email, password }; // Create user object with email and password
+            const response = await signInUser(user).unwrap() as AuthResponse; // Sign in user and unwrap response
+            await store.dispatch(setCredentials(response)); // Set user credentials in Redux store
+            router.replace('/(tabs)'); // Redirect to home screen after successful sign-in
         } catch (err) {
-            console.error('Failed to sign in: ', err);
+            console.error('Failed to sign in: ', err); // Log error if sign-in fails
         }
     };
 

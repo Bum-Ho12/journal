@@ -1,4 +1,4 @@
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import * as React from 'react';
 import { Link, useRouter } from "expo-router";
 import Colors from "@/constants/Colors";
@@ -26,7 +26,7 @@ const SignUpPage = () => {
             // Navigate to Home screen
             router.replace('/(tabs)');
         } catch (err) {
-            console.error('Failed to register user: ', err);
+            Alert.alert('Failed to register user.');
         }
     };
 

@@ -43,6 +43,9 @@ const api = createApi({
         getMonthlyJournals: builder.query({
             query: () => '/journals/monthly',
         }),
+        getCategories: builder.query({
+            query: () => '/categories',
+        }),
         createJournal: builder.mutation({
             query: (newJournal) => ({
             url: '/journals',
@@ -96,6 +99,7 @@ export const {
     useGetDailyJournalsQuery,
     useGetWeeklyJournalsQuery,
     useGetMonthlyJournalsQuery,
+    useGetCategoriesQuery,
     useCreateJournalMutation,
     useUpdateJournalMutation,
     useDeleteJournalMutation,

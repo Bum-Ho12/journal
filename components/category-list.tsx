@@ -1,19 +1,21 @@
-import Colors from "@/constants/Colors";
-import { Category } from "@/utils/types";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRef, useState, useEffect } from "react";
 import { View, Text, Pressable, StyleSheet, Animated, TextInput } from "react-native";
+import { useGetCategoriesQuery } from "@/store/api";
+import { Category } from "@/utils/types";
+import Colors from "@/constants/Colors";
 
 interface CategoryListProps {
-    categories: Category[];
     onSelectCategory: (selectedCategory: string) => void;
     selectedCategory?: string;
 }
 
-const CategoryList = ({ categories, onSelectCategory, selectedCategory }: CategoryListProps) => {
+const CategoryList = ({ onSelectCategory, selectedCategory }: CategoryListProps) => {
     const [expanded, setExpanded] = useState<boolean>(false);
     const [currentCategory, setCurrentCategory] = useState<string | undefined>(selectedCategory);
     const animation = useRef(new Animated.Value(0)).current;
+
+    const { data: categories = [], isLoading, isError } = useGetCategoriesQuery({}); // Fetch categories
 
     useEffect(() => {
         setCurrentCategory(selectedCategory);
@@ -49,19 +51,25 @@ const CategoryList = ({ categories, onSelectCategory, selectedCategory }: Catego
             </Pressable>
             <Animated.View style={[styles.subContainer, heightStyle]}>
                 <View style={styles.categoryContentStyle}>
-                    {categories.map((item: Category, index: number) => (
-                        <Pressable
-                            style={styles.categoryButtonStyle}
-                            key={index}
-                            onPress={() => {
-                                setCurrentCategory(item.name);
-                                onSelectCategory(item.name);
-                                toggleExpanded();
-                            }}
-                        >
-                            <Text style={styles.contentTextStyle}>{item.name}</Text>
-                        </Pressable>
-                    ))}
+                    {isLoading ? (
+                        <Text>Loading categories...</Text>
+                    ) : isError ? (
+                        <Text>Error fetching categories</Text>
+                    ) : (
+                        categories.map((item: Category, index: number) => (
+                            <Pressable
+                                style={styles.categoryButtonStyle}
+                                key={index}
+                                onPress={() => {
+                                    setCurrentCategory(item.name);
+                                    onSelectCategory(item.name);
+                                    toggleExpanded();
+                                }}
+                            >
+                                <Text style={styles.contentTextStyle}>{item.name}</Text>
+                            </Pressable>
+                        ))
+                    )}
                 </View>
             </Animated.View>
         </View>

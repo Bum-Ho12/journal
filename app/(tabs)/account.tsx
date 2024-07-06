@@ -1,20 +1,20 @@
 import React from 'react';
 import { View, StyleSheet, Text, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Colors from '@/constants/Colors';
-import { useDispatch } from 'react-redux';
-import { logOut } from '@/store/auth-slice';
-import { useRouter } from 'expo-router';
-import { store } from '@/store';
+import { Ionicons } from '@expo/vector-icons'; // Importing Ionicons from Expo vector icons
+import Colors from '@/constants/Colors'; // Importing Colors from constants
+import { useDispatch } from 'react-redux'; // Importing useDispatch hook from react-redux
+import { logOut } from '@/store/auth-slice'; // Importing logOut action from auth-slice
+import { useRouter } from 'expo-router'; // Importing useRouter from expo-router
+import { store } from '@/store'; // Importing store from store
 
 export default function AccountScreen() {
-    const user = store.getState().auth.user;
-    const dispatch = useDispatch();
-    const router = useRouter();
+    const user = store.getState().auth.user; // Getting user details from Redux store
+    const dispatch = useDispatch(); // useDispatch hook for dispatching actions
+    const router = useRouter(); // useRouter hook for navigation
 
     const handleEditProfile = () => {
         // Navigate to edit profile screen
-        router.push('/profile')
+        router.push('/profile');
     };
 
     const handleLogout = () => {
@@ -53,16 +53,16 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingVertical: 20,
-        paddingHorizontal:10,
+        paddingHorizontal: 10,
     },
     profileContainer: {
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 30,
-        backgroundColor:Colors.light.background,
+        backgroundColor: Colors.light.background,
         borderRadius: 10,
         padding: 10,
-        width: '100%'
+        width: '100%',
     },
     username: {
         fontSize: 24,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     email: {
         fontSize: 18,
         marginBottom: 5,
-        color:Colors.light.tint
+        color: Colors.light.tint,
     },
     avatar: {
         width: 100,
@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     buttonContainer: {
-        // flexDirection: 'row',
         justifyContent: 'space-around',
         gap: 10,
-        width: '100%',borderRadius:10,
-        padding: 10,backgroundColor: Colors.light.background,
-
+        width: '100%',
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: Colors.light.background,
     },
     editButton: {
         flexDirection: 'row',
@@ -99,9 +99,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     buttonText: {
-        // color: 'white',
         marginLeft: 10,
         fontSize: 18,
-        fontWeight: '600'
+        fontWeight: '600',
     },
 });

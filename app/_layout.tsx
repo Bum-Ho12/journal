@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import RootLayoutNav from './rootLayoutNav';
 import { loadCredentials } from '@/store/auth-slice';
-import * as SecureStore from 'expo-secure-store';
 import 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 
@@ -27,8 +26,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     const loadAccount =async()=>{
-      const resp = await SecureStore.getItemAsync('user')
-      console.log('user',resp)
       if (loaded) {
         await store.dispatch(loadCredentials()).then((res) => {
           SplashScreen.hideAsync();

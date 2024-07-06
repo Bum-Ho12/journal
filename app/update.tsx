@@ -8,29 +8,29 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import CategoryList from '@/components/category-list';
 import Colors from '@/constants/Colors';
-import { categories } from '@/data/test-data';
 
 export default function Update() {
-    const router = useRouter()
+    const router = useRouter();
     const { id } = useLocalSearchParams();
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [category, setCategory] = useState<string>('');
-    const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
+    const [dueDate, setDueDate] = useState<Date | undefined>(undefined); // State for due date
     const [showDatePicker, setShowDatePicker] = useState(false);
+
     const journals = store.getState().journals.journals;
 
     const [updateJournal, { isLoading: isUpdating }] = useUpdateJournalMutation();
     const [deleteJournal, { isLoading: isDeleting }] = useDeleteJournalMutation();
 
     useEffect(() => {
-        if (journals.length > 0 && id ) {
-            const journal = journals.find((item: Journal) => item.id === parseInt(id.toString() as string));
+        if (journals.length > 0 && id) {
+            const journal = journals.find((item: Journal) => item.id === parseInt(id.toString()));
             if (journal) {
                 setTitle(journal.title);
                 setContent(journal.content);
                 setCategory(journal.category);
-                setDueDate(new Date(journal.due_date));
+                setDueDate(journal.due_date ? new Date(journal.due_date) : undefined); // Set due date or undefined
             } else {
                 Alert.alert(`Journal not found`);
             }
@@ -38,9 +38,11 @@ export default function Update() {
     }, [id]);
 
     const handleDateChange = (event: any, selectedDate?: Date) => {
-        setShowDatePicker(false); // Hide date picker
+        setShowDatePicker(false);
         if (selectedDate) {
             setDueDate(selectedDate);
+        } else {
+            setDueDate(undefined); // Handle clearing due date
         }
     };
 
@@ -48,7 +50,7 @@ export default function Update() {
         try {
             await updateJournal({ id, title, content, category, due_date: dueDate?.toISOString() }).unwrap();
             Alert.alert('Success', 'Journal updated successfully');
-            router.back()
+            router.back();
         } catch (error) {
             Alert.alert('Error', 'Failed to update journal');
         }
@@ -58,7 +60,7 @@ export default function Update() {
         try {
             await deleteJournal(id).unwrap();
             Alert.alert('Success', 'Journal deleted successfully');
-            router.back()
+            router.back();
         } catch (error) {
             Alert.alert('Error', 'Failed to delete journal');
         }
@@ -74,7 +76,7 @@ export default function Update() {
                     onChangeText={(text) => setTitle(text)}
                     style={{ ...styles.inputStyle, fontSize: 24 }}
                 />
-                <CategoryList categories={categories} selectedCategory={category} onSelectCategory={setCategory} />
+                <CategoryList selectedCategory={category} onSelectCategory={setCategory} />
                 <View style={styles.dateContainer}>
                     <Text style={styles.dateText}>
                         {dueDate ? dueDate.toDateString() : 'Select due date'}
@@ -107,12 +109,15 @@ export default function Update() {
                 <Pressable style={styles.buttonStyle} onPress={handleDelete}>
                     <Ionicons name="archive-outline" size={32} color={Colors.light.tint} />
                 </Pressable>
-                {isDeleting?<Pressable style={styles.buttonStyle}>
-                    <Text style={styles.buttonTextStyle}>Deleting...</Text>
-                </Pressable>:
-                <Pressable style={styles.buttonStyle} onPress={handleDelete}>
-                    <MaterialCommunityIcons name="trash-can-outline" size={36} color={Colors.light.tint} />
-                </Pressable>}
+                {isDeleting ? (
+                    <Pressable style={styles.buttonStyle}>
+                        <Text style={styles.buttonTextStyle}>Deleting...</Text>
+                    </Pressable>
+                ) : (
+                    <Pressable style={styles.buttonStyle} onPress={handleDelete}>
+                        <MaterialCommunityIcons name="trash-can-outline" size={36} color={Colors.light.tint} />
+                    </Pressable>
+                )}
             </View>
         </View>
     );
@@ -154,10 +159,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 20,
         paddingVertical: 10,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
     },
     buttonTextStyle: {
         fontSize: 18,

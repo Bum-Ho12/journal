@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
-import { useUpdateUserMutation } from '@/store/api'; // Assuming you have a mutation for updating user profile
+import { useUpdateUserMutation } from '@/store/api';
 import Colors from '@/constants/Colors';
 import { store } from '@/store';
 
@@ -15,7 +15,7 @@ const ProfileScreen = () => {
 
     const handleUpdateProfile = async () => {
         try {
-            // Assuming you have user object with id, username, email, password properties
+            // user object with id, username, email, password properties
             await updateUser({ userId: email, username, email, password }).unwrap();
             Alert.alert('Success', 'Profile updated successfully');
         } catch (error) {

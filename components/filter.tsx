@@ -1,17 +1,23 @@
-import Colors from "@/constants/Colors";
-import { Category } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
 import { View, Text, Pressable, StyleSheet, Animated, TextInput } from "react-native";
+import { useGetCategoriesQuery } from "@/store/api";
+import { Category } from "@/utils/types";
+import Colors from "@/constants/Colors";
 
-const FilterCategory = ({ categories, onFilterChange }:{categories:Category[],
-    onFilterChange:(searchTerm: string, selectedCategory: React.SetStateAction<string>) => void}
-) => {
+interface FilterCategoryProps {
+    categories: Category[];
+    onFilterChange: (searchTerm: string, selectedCategory: string) => void;
+}
+
+const FilterCategory = ({ categories, onFilterChange }: FilterCategoryProps) => {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
 
     const animation = useRef(new Animated.Value(0)).current;
+
+    const { data: fetchedCategories = [], isLoading, isError } = useGetCategoriesQuery({}); // Fetch categories
 
     const toggleExpanded = () => {
         if (categories.length > 0) {
@@ -26,16 +32,16 @@ const FilterCategory = ({ categories, onFilterChange }:{categories:Category[],
     const heightStyle = {
         maxHeight: animation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, categories.length * 70]
-        })
+            outputRange: [0, categories.length * 70],
+        }),
     };
 
-    const handleSearch = (text:string) => {
+    const handleSearch = (text: string) => {
         setSearchTerm(text);
         onFilterChange(text, selectedCategory);
     };
 
-    const handleCategorySelect = (category:string) => {
+    const handleCategorySelect = (category: string) => {
         setSelectedCategory(category);
         onFilterChange(searchTerm, category);
         toggleExpanded();
@@ -52,11 +58,15 @@ const FilterCategory = ({ categories, onFilterChange }:{categories:Category[],
                     onChangeText={handleSearch}
                 />
                 <Pressable onPress={toggleExpanded}>
-                    <Ionicons name={expanded ? "close-circle-outline" : "filter"} size={30} color={Colors.light.tint} />
+                    <Ionicons
+                        name={expanded ? "close-circle-outline" : "filter"}
+                        size={30}
+                        color={Colors.light.tint}
+                    />
                 </Pressable>
             </View>
             <Animated.View style={[styles.subContainer, heightStyle]}>
-                <Text style={styles.titleStyle}>categories</Text>
+                <Text style={styles.titleStyle}>Categories</Text>
                 <View style={styles.categoryContentStyle}>
                     <Pressable
                         style={styles.categoryButtonStyle}
@@ -64,15 +74,21 @@ const FilterCategory = ({ categories, onFilterChange }:{categories:Category[],
                     >
                         <Text style={styles.contentTextStyle}>All</Text>
                     </Pressable>
-                    {categories.map((item, index:number) => (
-                        <Pressable
-                            style={styles.categoryButtonStyle}
-                            key={index}
-                            onPress={() => handleCategorySelect(item.name)}
-                        >
-                            <Text style={styles.contentTextStyle}>{item.name}</Text>
-                        </Pressable>
-                    ))}
+                    {isLoading ? (
+                        <Text>Loading categories...</Text>
+                    ) : isError ? (
+                        <Text>Error fetching categories</Text>
+                    ) : (
+                        fetchedCategories.map((item: Category, index: number) => (
+                            <Pressable
+                                style={styles.categoryButtonStyle}
+                                key={index}
+                                onPress={() => handleCategorySelect(item.name)}
+                            >
+                                <Text style={styles.contentTextStyle}>{item.name}</Text>
+                            </Pressable>
+                        ))
+                    )}
                 </View>
             </Animated.View>
         </View>
@@ -84,11 +100,13 @@ export default FilterCategory;
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        paddingHorizontal: 10,paddingTop:10,
+        paddingHorizontal: 10,
+        paddingTop: 10,
         gap: 10,
     },
     subContainer: {
-        overflow: 'hidden', gap: 10
+        overflow: 'hidden',
+        gap: 10,
     },
     inputStyle: {
         width: '80%',
@@ -96,7 +114,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: 'flex-start',
         paddingHorizontal: 20,
-        fontSize: 18
+        fontSize: 18,
     },
     categoryPressStyle: {
         flexDirection: 'row',
@@ -104,27 +122,31 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 10,
         backgroundColor: Colors.light.background,
-        alignItems: 'center', borderRadius: 10
+        alignItems: 'center',
+        borderRadius: 10,
     },
     categoryContentStyle: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        width: '100%', flexWrap: 'wrap', gap: 5,
+        width: '100%',
+        flexWrap: 'wrap',
+        gap: 5,
         backgroundColor: 'white',
-        padding: 20, borderRadius: 10
+        padding: 20,
+        borderRadius: 10,
     },
     categoryButtonStyle: {
         padding: 10,
         borderRadius: 10,
-        borderWidth: .5,
+        borderWidth: 0.5,
         borderColor: Colors.light.text,
     },
     titleStyle: {
         fontSize: 16,
-        fontWeight: '600'
+        fontWeight: '600',
     },
     contentTextStyle: {
         fontSize: 16,
-        fontWeight: '700'
-    }
+        fontWeight: '700',
+    },
 });
