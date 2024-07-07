@@ -6,11 +6,10 @@ import { Category } from "@/utils/types";
 import Colors from "@/constants/Colors";
 
 interface FilterCategoryProps {
-    categories: Category[];
     onFilterChange: (searchTerm: string, selectedCategory: string) => void;
 }
 
-const FilterCategory = ({ categories, onFilterChange }: FilterCategoryProps) => {
+const FilterCategory = ({ onFilterChange }: FilterCategoryProps) => {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -20,7 +19,7 @@ const FilterCategory = ({ categories, onFilterChange }: FilterCategoryProps) => 
     const { data: fetchedCategories = [], isLoading, isError } = useGetCategoriesQuery({}); // Fetch categories
 
     const toggleExpanded = () => {
-        if (categories.length > 0) {
+        if (fetchedCategories.length > 0) {
             Animated.timing(animation, {
                 toValue: expanded ? 0 : 1,
                 duration: 300,
@@ -32,7 +31,7 @@ const FilterCategory = ({ categories, onFilterChange }: FilterCategoryProps) => 
     const heightStyle = {
         maxHeight: animation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, categories.length * 70],
+            outputRange: [0, fetchedCategories.length * 70],
         }),
     };
 

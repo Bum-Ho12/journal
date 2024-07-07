@@ -36,12 +36,15 @@ const api = createApi({
         }),
         getDailyJournals: builder.query({
             query: () => '/journals/daily',
+            providesTags: ['Journals'],
         }),
         getWeeklyJournals: builder.query({
             query: () => '/journals/weekly',
+            providesTags: ['Journals'],
         }),
         getMonthlyJournals: builder.query({
             query: () => '/journals/monthly',
+            providesTags: ['Journals'],
         }),
         getCategories: builder.query({
             query: () => '/categories',

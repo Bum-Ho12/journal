@@ -4,7 +4,6 @@ import { StyleSheet, View, ScrollView, Text,
 } from 'react-native';
 import FilterCategory from '@/components/filter'; // Importing FilterCategory component
 import JournalCard from '@/components/journal-card'; // Importing JournalCard component
-import { categories } from '@/data/test-data'; // Importing categories data
 import { Journal } from '@/utils/types'; // Importing Journal type
 import { useGetJournalsQuery } from '@/store/api'; // Importing useGetJournalsQuery hook
 import { getErrorMessage } from '@/utils/handlers'; // Importing getErrorMessage function
@@ -109,7 +108,7 @@ export default function HomeScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         {/* Rendering filter category component */}
-        <FilterCategory categories={categories} onFilterChange={handleFilterChange} />
+        <FilterCategory onFilterChange={handleFilterChange} />
 
         {/* Toggle layout button */}
         <View style={styles.viewStyle}>

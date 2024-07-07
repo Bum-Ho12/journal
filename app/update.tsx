@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useUpdateJournalMutation, useDeleteJournalMutation } from '@/store/api';
 import { Journal } from '@/utils/types';
 import { store } from '@/store';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import CategoryList from '@/components/category-list';
 import Colors from '@/constants/Colors';
@@ -15,12 +15,12 @@ export default function Update() {
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [category, setCategory] = useState<string>('');
-    const [dueDate, setDueDate] = useState<Date | undefined>(undefined); // State for due date
+    const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const journals = store.getState().journals.journals;
 
-    const [updateJournal, { isLoading: isUpdating }] = useUpdateJournalMutation();
+    const [updateJournal, { isLoading: isUpdating,error }] = useUpdateJournalMutation();
     const [deleteJournal, { isLoading: isDeleting }] = useDeleteJournalMutation();
 
     useEffect(() => {
@@ -48,10 +48,13 @@ export default function Update() {
 
     const handleUpdate = async () => {
         try {
-            await updateJournal({ id, title, content, category, due_date: dueDate?.toISOString() }).unwrap();
+            await updateJournal(
+                { id, title, content, category, due_date: dueDate ?dueDate.toISOString():null }
+            ).unwrap();
             Alert.alert('Success', 'Journal updated successfully');
             router.back();
         } catch (error) {
+            console.log('error',error)
             Alert.alert('Error', 'Failed to update journal');
         }
     };
@@ -115,7 +118,7 @@ export default function Update() {
                     </Pressable>
                 ) : (
                     <Pressable style={styles.buttonStyle} onPress={handleDelete}>
-                        <MaterialCommunityIcons name="trash-can-outline" size={36} color={Colors.light.tint} />
+                        <Ionicons name="trash-outline" size={36} color={Colors.light.tint} />
                     </Pressable>
                 )}
             </View>

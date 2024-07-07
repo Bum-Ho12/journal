@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   tabBarLabelStyle:{
-    fontSize: 18,
+    fontSize: 16,
     fontWeight:'500',
     paddingBottom: 7,
   },
