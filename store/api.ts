@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logOut } from './auth-slice';
 import {RootState} from './index'
 
-const baseUrl = 'https://journal-1ixk.onrender.com';
+const baseUrl = process.env.EXPO_PUBLIC_API_URL
+console.log(baseUrl)
 
 const baseQuery = fetchBaseQuery({
     baseUrl,

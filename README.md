@@ -34,7 +34,7 @@ This is a mobile frontend for the Journal application, built with Expo and React
 
 Create a `.env` file in the root directory and add any necessary environment variables. For example:
 ```
-API_BASE_URL=http://127.0.0.1:8000  # URL of the FastAPI backend
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8000  # URL of the FastAPI backend
 ```
 
 ## Running the Application
@@ -72,6 +72,7 @@ API_BASE_URL=http://127.0.0.1:8000  # URL of the FastAPI backend
 ├── node_modules           # Node.js modules
 ├── store                  # Redux slices and store configuration
 ├── utils                  # Utility functions
+├── .env                   # Environment variables
 ├── .gitignore             # Git ignore file
 ├── app.json               # Expo configuration file
 ├── babel.config.js        # Babel configuration file
