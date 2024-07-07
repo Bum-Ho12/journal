@@ -76,7 +76,6 @@ EXPO_PUBLIC_API_URL=http://127.0.0.1:8000  # URL of the FastAPI backend
 ├── .gitignore             # Git ignore file
 ├── app.json               # Expo configuration file
 ├── babel.config.js        # Babel configuration file
-├── expo-env.d.ts          # Expo environment type definitions
 ├── package.json           # Project metadata and dependencies
 ├── README.md              # Project documentation
 ├── tsconfig.json          # TypeScript configuration file
